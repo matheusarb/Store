@@ -54,13 +54,15 @@ namespace Store.Tests.Domain
             Assert.AreEqual(_order.Items.Count, 0);
         }
 
-        // [TestMethod]
-        // [TestCategory("Domain")]
-        // public void Dado_um_novo_item_com_quantidade_zero_ou_menor_o_mesmo_nao_deve_ser_adicionado()
-        // {
-        //     Assert.Fail();
-
-        // }
+        [TestMethod]
+        [TestCategory("Domain")]
+        public void Dado_um_novo_item_com_quantidade_zero_ou_menor_o_mesmo_nao_deve_ser_adicionado()
+        {
+            _order.AddItem(_product, 0);
+            _order.AddItem(_product, -1);
+            var itemList = _order.Items.Count;
+            Assert.AreEqual(_order.Items.Count, 0);
+        }
 
         // [TestMethod]
         // [TestCategory("Domain")]
