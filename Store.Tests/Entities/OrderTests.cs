@@ -101,24 +101,26 @@ namespace Store.Tests.Domain
         {
             var order = new Order(_customer, 0, new Discount(10, DateTime.Now.AddDays(5)));
             order.AddItem(_product, 6);
-
             Assert.AreEqual(order.Total(), 50);
         }
 
-        // [TestMethod]
-        // [TestCategory("Domain")]
-        // public void Dado_uma_taxa_de_entrega_de_10_o_valor_do_pedido_deve_ser_60()
-        // {
-        //     Assert.Fail();
+        [TestMethod]
+        [TestCategory("Domain")]
+        public void Dado_uma_taxa_de_entrega_de_10_o_valor_do_pedido_deve_ser_60()
+        {
+            var order = new Order(_customer, 10, new Discount(10, DateTime.Now.AddDays(5)));
+            order.AddItem(_product, 6);
+            Assert.AreEqual(order.Total(), 60);
 
-        // }
+        }
 
-        // [TestMethod]
-        // [TestCategory("Domain")]
-        // public void Dado_um_pedido_sem_cliente_o_mesmo_deve_ser_invalido()
-        // {
-        //     Assert.Fail();
+        [TestMethod]
+        [TestCategory("Domain")]
+        public void Dado_um_pedido_sem_cliente_o_mesmo_deve_ser_invalido()
+        {
+            var order = new Order(null, 10, new Discount(10, DateTime.Now.AddDays(5)));
 
-        // }
+            Assert.AreEqual(order.Invalid, true);
+        }
     }
 }

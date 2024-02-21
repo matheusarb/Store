@@ -7,11 +7,11 @@ namespace Store.Domain.Entities
     {
         public Discount(decimal amount, DateTime expireDate)
         {
-            // AddNotifications(
-            //     new Contract()
-            //     .Requires()
-            //     .IsNotNull(ExpireDate, "ExpireDate", "A data de expiração não pode ser nula.")
-            // );
+            AddNotifications(
+                new Contract()
+                .Requires()
+                .IsNotNull(ExpireDate, "ExpireDate", "A data de expiração não pode ser nula.")
+            );
 
             Amount = amount;
             ExpireDate = expireDate;
