@@ -1,4 +1,5 @@
 using System;
+using Flunt.Validations;
 
 namespace Store.Domain.Entities
 {
@@ -6,6 +7,12 @@ namespace Store.Domain.Entities
     {
         public Discount(decimal amount, DateTime expireDate)
         {
+            // AddNotifications(
+            //     new Contract()
+            //     .Requires()
+            //     .IsNotNull(ExpireDate, "ExpireDate", "A data de expiração não pode ser nula.")
+            // );
+
             Amount = amount;
             ExpireDate = expireDate;
         }
@@ -24,6 +31,12 @@ namespace Store.Domain.Entities
                 return Amount;
             else
                 return 0;
+        }
+
+        public void ChangeToExpiredDate()
+        {
+            ExpireDate = DateTime.Now.AddDays(-10);
+            Amount = 0;
         }
     }
 }
