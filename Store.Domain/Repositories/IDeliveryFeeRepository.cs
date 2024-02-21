@@ -4,5 +4,5 @@ namespace Store.Domain.Repositories.Interfaces;
 
 public interface IDeliveryFeeRepository
 {
-    decimal Get(string document);
+    decimal Get(string zipCode);
 }
