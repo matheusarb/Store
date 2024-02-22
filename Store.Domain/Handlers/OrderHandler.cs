@@ -1,8 +1,10 @@
 using Flunt.Notifications;
 using Store.Domain.Commands;
 using Store.Domain.Commands.Interfaces;
+using Store.Domain.Entities;
 using Store.Domain.Handlers.Interfaces;
 using Store.Domain.Repositories.Interfaces;
+using Store.Domain.Utils;
 
 namespace Store.Domain.Handlers;
 
@@ -32,11 +34,39 @@ public class OrderHandler :
 
     public ICommandResult Handle(CreateOrderCommand command)
     {
-        //FailtFastValidation
+        // FailtFastValidation
         command.Validate();
         if(command.Invalid)
             return new GenericCommandResult(false, "Pedido inválido", command.Notifications);
 
-        return new GenericCommandResult(true, "", new object());
+        // 1. Recuperar o cliente
+        var customer = _customerRepository.Get(command.Customer);
+
+        // 2. Calcular taxa de entrega
+        var deliveryFee = _deliveryFeeRepository.Get(command.ZipCode);
+
+        // 3. Obtém o cupom de desconto
+        var discount = _discountRepository.Get(command.PromoCode);
+
+        // 4. Gera o pedido
+        var products = _productRepository.Get(ExtractGuids.Extract(command.Items)).ToList();
+        var order = new Order(customer, deliveryFee, discount);
+        foreach(var item in command.Items)
+        {
+            var product = products.Where(x=>x.Id == item.ProductId).FirstOrDefault();
+            order.AddItem(product, item.Quantity);
+        }
+
+        // 5. Agrupar as notificações
+        AddNotifications(order.Notifications);
+
+        // 6. Verifica se deu tudo certo
+        if(Invalid)
+            return new GenericCommandResult(false, "Falha ao gerar pedido", Notifications);
+
+        // 7. Retorna o resultado
+        _orderRepository.Save(order);
+
+        return new GenericCommandResult(true, $"Pedido {order.Number} gerado com sucesso", order);
     }
 }
